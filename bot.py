@@ -12,12 +12,21 @@ def site(message):
 
 @bot.message_handler(commands=['start'])
 def start(message):
-    bot.send_message(message.chat.id, f'Привет, {message.from_user.first_name}!\nОтправь картинку и узнай моё мнение')
+    markup = types.ReplyKeyboardMarkup()
+    btn1 = types.KeyboardButton('Перейти на сайт')
+    markup.row(btn1)
+    btn2 = types.KeyboardButton('Удалить фото')
+    btn3 = types.KeyboardButton('Изменить текст')
+    markup.row(btn2, btn3)
+    bot.send_message(message.chat.id, f'Привет, {message.from_user.first_name}!, Отправь картинку и узнай моё мнение', reply_markup=markup)
+    bot.register_next_step_handler(message, get_photo)
+
 
 
 @bot.message_handler(commands=['help'])
 def main(message):
     bot.send_message(message.chat.id, '<b>Help</b> <em><u> information</u></em>', parse_mode='html')
+
 
 
 @bot.message_handler()
@@ -47,6 +56,9 @@ def callback_message(callback):
         bot.delete_message(callback.message.chat.id, callback.message.message_id -1)
     elif callback.data == 'edit':
         bot.edit_message_text('edit text', callback.message.chat.id, callback.message.message_id)
+
+
+
 
 
 bot.polling(non_stop=True)
